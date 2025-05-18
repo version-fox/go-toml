@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/pelletier/go-toml/v2"
-	"github.com/pelletier/go-toml/v2/internal/assert"
+	"github.com/version-fox/go-toml"
+	"github.com/version-fox/go-toml/internal/assert"
 )
 
 var bench_inputs = []struct {

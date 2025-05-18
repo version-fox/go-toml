@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pelletier/go-toml/v2"
-	"github.com/pelletier/go-toml/v2/internal/assert"
-	"github.com/pelletier/go-toml/v2/unstable"
+	"github.com/version-fox/go-toml"
+	"github.com/version-fox/go-toml/internal/assert"
+	"github.com/version-fox/go-toml/unstable"
 )
 
 type unmarshalTextKey struct {

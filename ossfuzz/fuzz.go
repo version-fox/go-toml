@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/pelletier/go-toml/v2"
+	"github.com/version-fox/go-toml"
 )
 
 func FuzzToml(data []byte) int {

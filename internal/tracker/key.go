@@ -1,6 +1,6 @@
 package tracker
 
-import "github.com/pelletier/go-toml/v2/unstable"
+import "github.com/version-fox/go-toml/unstable"
 
 // KeyTracker is a tracker that keeps track of the current Key as the AST is
 // walked.

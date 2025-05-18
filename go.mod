@@ -1,3 +1,3 @@
-module github.com/pelletier/go-toml/v2
+module github.com/version-fox/go-toml
 
 go 1.21.0

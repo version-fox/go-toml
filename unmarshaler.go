@@ -12,9 +12,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/pelletier/go-toml/v2/internal/danger"
-	"github.com/pelletier/go-toml/v2/internal/tracker"
-	"github.com/pelletier/go-toml/v2/unstable"
+	"github.com/version-fox/go-toml/internal/danger"
+	"github.com/version-fox/go-toml/internal/tracker"
+	"github.com/version-fox/go-toml/unstable"
 )
 
 // Unmarshal deserializes a TOML document into a Go value.

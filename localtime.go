@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pelletier/go-toml/v2/unstable"
+	"github.com/version-fox/go-toml/unstable"
 )
 
 // LocalDate represents a calendar day in no specific timezone.

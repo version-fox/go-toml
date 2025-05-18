@@ -14,7 +14,7 @@
 //
 // Using Go:
 //
-//	go install github.com/pelletier/go-toml/v2/cmd/jsontoml@latest
+//	go install github.com/version-fox/go-toml/cmd/jsontoml@latest
 package main
 
 import (
@@ -22,8 +22,8 @@ import (
 	"flag"
 	"io"
 
-	"github.com/pelletier/go-toml/v2"
-	"github.com/pelletier/go-toml/v2/internal/cli"
+	"github.com/version-fox/go-toml"
+	"github.com/version-fox/go-toml/internal/cli"
 )
 
 const usage = `jsontoml can be used in two ways:

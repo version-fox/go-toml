@@ -13,12 +13,12 @@ This library supports [TOML v1.0.0](https://toml.io/en/v1.0.0).
 Full API, examples, and implementation notes are available in the Go
 documentation.
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/pelletier/go-toml/v2.svg)](https://pkg.go.dev/github.com/pelletier/go-toml/v2)
+[![Go Reference](https://pkg.go.dev/badge/github.com/version-fox/go-toml.svg)](https://pkg.go.dev/github.com/version-fox/go-toml)
 
 ## Import
 
 ```go
-import "github.com/pelletier/go-toml/v2"
+import "github.com/version-fox/go-toml"
 ```
 
 See [Modules](#Modules).
@@ -41,7 +41,7 @@ operations should not be shockingly slow. See [benchmarks](#benchmarks).
 the TOML document was not present in the target structure. This is a great way
 to check for typos. [See example in the documentation][strict].
 
-[strict]: https://pkg.go.dev/github.com/pelletier/go-toml/v2#example-Decoder.DisallowUnknownFields
+[strict]: https://pkg.go.dev/github.com/version-fox/go-toml#example-Decoder.DisallowUnknownFields
 
 ### Contextualized errors
 
@@ -56,7 +56,7 @@ example:
 3| port = 50
 ```
 
-[decode-err]: https://pkg.go.dev/github.com/pelletier/go-toml/v2#DecodeError
+[decode-err]: https://pkg.go.dev/github.com/version-fox/go-toml#DecodeError
 
 ### Local date and time support
 
@@ -68,9 +68,9 @@ making them convenient yet unambiguous structures for their respective TOML
 representation.
 
 [ldt]: https://toml.io/en/v1.0.0#local-date-time
-[tld]: https://pkg.go.dev/github.com/pelletier/go-toml/v2#LocalDate
-[tlt]: https://pkg.go.dev/github.com/pelletier/go-toml/v2#LocalTime
-[tldt]: https://pkg.go.dev/github.com/pelletier/go-toml/v2#LocalDateTime
+[tld]: https://pkg.go.dev/github.com/version-fox/go-toml#LocalDate
+[tlt]: https://pkg.go.dev/github.com/version-fox/go-toml#LocalTime
+[tldt]: https://pkg.go.dev/github.com/version-fox/go-toml#LocalDateTime
 
 ### Commented config
 
@@ -90,7 +90,7 @@ port = 4242
 # version = 'TLS 1.3'
 ```
 
-[comments-example]: https://pkg.go.dev/github.com/pelletier/go-toml/v2#example-Marshal-Commented
+[comments-example]: https://pkg.go.dev/github.com/version-fox/go-toml#example-Marshal-Commented
 
 ## Getting started
 
@@ -131,7 +131,7 @@ fmt.Println("tags:", cfg.Tags)
 // tags: [go toml]
 ```
 
-[unmarshal]: https://pkg.go.dev/github.com/pelletier/go-toml/v2#Unmarshal
+[unmarshal]: https://pkg.go.dev/github.com/version-fox/go-toml#Unmarshal
 
 ### Marshaling
 
@@ -157,7 +157,7 @@ fmt.Println(string(b))
 // Tags = ['go', 'toml']
 ```
 
-[marshal]: https://pkg.go.dev/github.com/pelletier/go-toml/v2#Marshal
+[marshal]: https://pkg.go.dev/github.com/version-fox/go-toml#Marshal
 
 ## Unstable API
 
@@ -168,7 +168,7 @@ API subject to change.
 ### Parser
 
 Parser is the unstable API that allows iterative parsing of a TOML document at
-the AST level. See https://pkg.go.dev/github.com/pelletier/go-toml/v2/unstable.
+the AST level. See https://pkg.go.dev/github.com/version-fox/go-toml/unstable.
 
 ## Benchmarks
 
@@ -221,7 +221,7 @@ Installation instructions:
 
 - Go ≥ 1.16: Nothing to do. Use the import in your code. The `go` command deals
   with it automatically.
-- Go ≥ 1.13: `GO111MODULE=on go get github.com/pelletier/go-toml/v2`.
+- Go ≥ 1.13: `GO111MODULE=on go get github.com/version-fox/go-toml`.
 
 In case of trouble: [Go Modules FAQ][mod-faq].
 
@@ -234,21 +234,21 @@ Go-toml provides three handy command line tools:
  * `tomljson`: Reads a TOML file and outputs its JSON representation.
 
 	```
-	$ go install github.com/pelletier/go-toml/v2/cmd/tomljson@latest
+	$ go install github.com/version-fox/go-toml/cmd/tomljson@latest
 	$ tomljson --help
 	```
 
  * `jsontoml`: Reads a JSON file and outputs a TOML representation.
 
 	```
-	$ go install github.com/pelletier/go-toml/v2/cmd/jsontoml@latest
+	$ go install github.com/version-fox/go-toml/cmd/jsontoml@latest
 	$ jsontoml --help
 	```
 
  * `tomll`: Lints and reformats a TOML file.
 
 	```
-	$ go install github.com/pelletier/go-toml/v2/cmd/tomll@latest
+	$ go install github.com/version-fox/go-toml/cmd/tomll@latest
 	$ tomll --help
 	```
 
@@ -484,7 +484,7 @@ fmt.Println("v2 Encoder:\n" + string(buf.Bytes()))
 //   key = 'value'
 ```
 
-[sit]: https://pkg.go.dev/github.com/pelletier/go-toml/v2#Encoder.SetIndentTables
+[sit]: https://pkg.go.dev/github.com/version-fox/go-toml#Encoder.SetIndentTables
 
 #### Keys and strings are single quoted
 

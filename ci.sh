@@ -147,7 +147,7 @@ bench() {
     pushd "$dir"
 
     if [ "${replace}" != "" ]; then
-        find ./benchmark/ -iname '*.go' -exec sed -i -E "s|github.com/pelletier/go-toml/v2|${replace}|g" {} \;
+        find ./benchmark/ -iname '*.go' -exec sed -i -E "s|github.com/version-fox/go-toml|${replace}|g" {} \;
         go get "${replace}"
     fi
 
@@ -252,7 +252,7 @@ benchmark() {
         shift
 
         v2stats=`fmktemp go-toml-v2`
-        bench HEAD "${v2stats}" "github.com/pelletier/go-toml/v2"
+        bench HEAD "${v2stats}" "github.com/version-fox/go-toml"
         v1stats=`fmktemp go-toml-v1`
         bench HEAD "${v1stats}" "github.com/pelletier/go-toml"
         bsstats=`fmktemp bs-toml`

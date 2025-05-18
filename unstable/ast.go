@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/pelletier/go-toml/v2/internal/danger"
+	"github.com/version-fox/go-toml/internal/danger"
 )
 
 // Iterator over a sequence of nodes.

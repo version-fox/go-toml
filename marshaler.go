@@ -14,7 +14,7 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/pelletier/go-toml/v2/internal/characters"
+	"github.com/version-fox/go-toml/internal/characters"
 )
 
 // Marshal serializes a Go value as a TOML document.
@@ -43,6 +43,7 @@ type Encoder struct {
 	indentSymbol       string
 	indentTables       bool
 	marshalJsonNumbers bool
+	rootInline         bool
 }
 
 // NewEncoder returns a new Encoder that writes to w.
@@ -51,6 +52,11 @@ func NewEncoder(w io.Writer) *Encoder {
 		w:            w,
 		indentSymbol: "  ",
 	}
+}
+
+func (enc *Encoder) SetRootInline(inline bool) *Encoder {
+	enc.rootInline = inline
+	return enc
 }
 
 // SetTablesInline forces the encoder to emit all tables inline.
@@ -175,6 +181,7 @@ func (enc *Encoder) Encode(v interface{}) error {
 	)
 
 	ctx.inline = enc.tablesInline
+	ctx.rootInline = enc.rootInline
 
 	if v == nil {
 		return fmt.Errorf("toml: cannot encode a nil interface")
@@ -219,6 +226,9 @@ type encoderCtx struct {
 	// Should the next table be encoded as inline
 	inline bool
 
+	//
+	rootInline bool
+
 	// Indentation level
 	indent int
 
@@ -248,6 +258,10 @@ func (ctx *encoderCtx) clearKey() {
 
 func (ctx *encoderCtx) isRoot() bool {
 	return len(ctx.parentKey) == 0 && !ctx.hasKey
+}
+
+func (ctx *encoderCtx) level() int {
+	return len(ctx.parentKey)
 }
 
 func (enc *Encoder) encode(b []byte, ctx encoderCtx, v reflect.Value) ([]byte, error) {
@@ -666,7 +680,9 @@ func (enc *Encoder) encodeMap(b []byte, ctx encoderCtx, v reflect.Value) ([]byte
 			return nil, err
 		}
 
-		if willConvertToTableOrArrayTable(ctx, v) {
+		if ctx.rootInline && ctx.hasKey {
+			t.pushKV(k, v, emptyValueOptions)
+		} else if willConvertToTableOrArrayTable(ctx, v) {
 			t.pushTable(k, v, emptyValueOptions)
 		} else {
 			t.pushKV(k, v, emptyValueOptions)
@@ -764,7 +780,7 @@ func walkStruct(ctx encoderCtx, t *table, v reflect.Value) {
 			comment:   fieldType.Tag.Get("comment"),
 		}
 
-		if opts.inline || !willConvertToTableOrArrayTable(ctx, f) {
+		if opts.inline || !(ctx.rootInline && ctx.level() <= 1) || !willConvertToTableOrArrayTable(ctx, f) {
 			t.pushKV(k, f, options)
 		} else {
 			t.pushTable(k, f, options)
@@ -861,6 +877,29 @@ func (enc *Encoder) encodeTable(b []byte, ctx encoderCtx, t table) ([]byte, erro
 
 	ctx.shiftKey()
 
+	//// rootInline: 只在 root 层输出表头，后续都以内联表
+	//if enc.rootInline && ctx.isRoot() {
+	//	for _, t2 := range t.tables {
+	//		ctx.setKey(t2.Key)
+	//		// 输出一级表头
+	//		b, err = enc.encodeTableHeader(ctx, b)
+	//		if err != nil {
+	//			return nil, err
+	//		}
+	//		// 下一级强制 inline
+	//		ctx2 := ctx
+	//		ctx2.inline = true
+	//		var innerTable table
+	//		walkStruct(ctx2, &innerTable, t2.Value)
+	//		b, err = enc.encodeTableInline(b, ctx2, innerTable)
+	//		if err != nil {
+	//			return nil, err
+	//		}
+	//		b = append(b, '\n')
+	//	}
+	//	return b, nil
+	//}
+
 	if ctx.insideKv || (ctx.inline && !ctx.isRoot()) {
 		return enc.encodeTableInline(b, ctx, t)
 	}
@@ -915,6 +954,9 @@ func (enc *Encoder) encodeTable(b []byte, ctx encoderCtx, t table) ([]byte, erro
 		ctx.options = table.Options
 		ctx2 := ctx
 		ctx2.commented = ctx2.commented || ctx.options.commented
+		if ctx.rootInline {
+			ctx2.inline = ctx.level() > 0
+		}
 
 		b, err = enc.encode(b, ctx2, table.Value)
 		if err != nil {

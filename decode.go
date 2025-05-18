@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/pelletier/go-toml/v2/unstable"
+	"github.com/version-fox/go-toml/unstable"
 )
 
 func parseInteger(b []byte) (int64, error) {

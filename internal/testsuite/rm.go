@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/pelletier/go-toml/v2"
+	"github.com/version-fox/go-toml"
 )
 
 // Remove JSON tags to a data structure as returned by toml-test.

@@ -5,7 +5,7 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/pelletier/go-toml/v2"
+	"github.com/version-fox/go-toml"
 )
 
 type customInt int

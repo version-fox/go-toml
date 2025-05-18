@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pelletier/go-toml/v2/internal/assert"
+	"github.com/version-fox/go-toml/internal/assert"
 )
 
 func TestConvert(t *testing.T) {

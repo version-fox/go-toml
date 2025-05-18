@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"unicode"
 
-	"github.com/pelletier/go-toml/v2/internal/characters"
-	"github.com/pelletier/go-toml/v2/internal/danger"
+	"github.com/version-fox/go-toml/internal/characters"
+	"github.com/version-fox/go-toml/internal/danger"
 )
 
 // ParserError describes an error relative to the content of the document.

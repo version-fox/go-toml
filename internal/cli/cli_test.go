@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pelletier/go-toml/v2"
-	"github.com/pelletier/go-toml/v2/internal/assert"
+	"github.com/version-fox/go-toml"
+	"github.com/version-fox/go-toml/internal/assert"
 )
 
 func processMain(args []string, input io.Reader, stdout, stderr io.Writer, f ConvertFn) int {

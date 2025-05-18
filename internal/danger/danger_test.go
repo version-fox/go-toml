@@ -4,8 +4,8 @@ import (
 	"testing"
 	"unsafe"
 
-	"github.com/pelletier/go-toml/v2/internal/assert"
-	"github.com/pelletier/go-toml/v2/internal/danger"
+	"github.com/version-fox/go-toml/internal/assert"
+	"github.com/version-fox/go-toml/internal/danger"
 )
 
 func TestSubsliceOffsetValid(t *testing.T) {

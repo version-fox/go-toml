@@ -1,6 +1,6 @@
 package unstable
 
-import "github.com/pelletier/go-toml/v2/internal/characters"
+import "github.com/version-fox/go-toml/internal/characters"
 
 func scanFollows(b []byte, pattern string) bool {
 	n := len(pattern)
