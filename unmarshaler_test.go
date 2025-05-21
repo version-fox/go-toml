@@ -3998,3 +3998,57 @@ foo = "bar"`,
 		})
 	}
 }
+
+func TestUnmarshalPrimary(t *testing.T) {
+	type Primary struct {
+		A string `toml:"primary"`
+		B int
+	}
+
+	type Config struct {
+		Primary Primary
+	}
+
+	examples := []struct {
+		desc     string
+		v        string
+		expected Config
+		err      bool
+	}{
+		{
+			desc: "not toml primitive type",
+			expected: Config{
+				Primary: Primary{
+					A: "AValue",
+					B: 1,
+				},
+			},
+			v: `Primary = { primary = 'AValue', B = 1 }
+`,
+		},
+		{
+			desc: "single value ",
+			expected: Config{
+				Primary: Primary{
+					A: "AValue",
+				},
+			},
+			v: `Primary = 'AValue'
+`,
+		},
+	}
+
+	for _, e := range examples {
+		e := e
+		t.Run(e.desc, func(t *testing.T) {
+			var cfg Config
+			err := toml.Unmarshal([]byte(e.v), &cfg)
+			if e.err {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, e.expected, cfg)
+			}
+		})
+	}
+}

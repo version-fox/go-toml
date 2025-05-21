@@ -1,4 +1,91 @@
-# go-toml v2
+# go-toml for `vfox`
+
+This library is internal fork of [go-toml](https://github.com/pelletier/go-toml).
+
+We use this library to parse TOML files in `vfox`, and we add some features that `vfox` needs.
+
+## Some extra features 
+
+### Add `RootInline` option for Encoder
+
+Different from `TablesInline`, when this is turned on, 
+it will use inline form for non-root node filed.
+
+```golang
+type Entry struct {
+		A string `toml:"a"`
+		B bool   `toml:"b"`
+	}
+	cfg := map[string]map[string]Entry{
+		"python": {
+			"path": {
+				A: "Avalue",
+				B: true,
+			},
+		},
+	}
+	var buf bytes.Buffer
+	enc := toml.NewEncoder(&buf)
+	enc.SetRootInline(true)
+
+	err := enc.Encode(cfg)
+	assert.NoError(t, err)
+	expected := `[java]
+path = {a = 'Avalue', b = false}
+`
+	assert.Equal(t, expected, buf.String())
+```
+
+### Add `primary` tag
+This tag is used to mark the primary key of a table. 
+When TOML is primitive type value, it will be assigned to the primary key.
+BUT only one field can be marked as primary key and only effective for `struct`.
+
+Here's an example, and the reverse is also true
+```golang
+type Primary struct {
+		A string `toml:"primary"`
+		B int
+	}
+
+	type Config struct {
+		Primary Primary
+	}
+
+	examples := []struct {
+		desc     string
+		v        string
+		expected Config
+		err      bool
+	}{
+		{
+			desc: "not toml primitive type",
+			expected: Config{
+				Primary: Primary{
+					A: "AValue",
+					B: 1,
+				},
+			},
+			v: `Primary = { primary = 'AValue', B = 1 }
+`,
+		},
+		{
+			desc: "single value ",
+			expected: Config{
+				Primary: Primary{
+					A: "AValue",
+				},
+			},
+			v: `Primary = 'AValue'
+`,
+		},
+	}
+	
+```
+
+
+
+
 
 Go library for the [TOML](https://toml.io/en/) format.
 

@@ -1797,3 +1797,91 @@ port = 4242
 `
 	assert.Equal(t, expected, string(out))
 }
+
+func TestEncodePrimary(t *testing.T) {
+	type Primary struct {
+		A string `toml:"primary"`
+		B int
+	}
+
+	type Config struct {
+		Primary Primary
+	}
+
+	examples := []struct {
+		desc     string
+		v        Config
+		expected string
+		err      bool
+	}{
+		{
+			desc: "output all fields if other fields are present",
+			v: Config{
+				Primary: Primary{
+					A: "AValue",
+					B: 1,
+				},
+			},
+			expected: `Primary = { primary = 'AValue', B = 1 }
+`,
+		},
+		{
+			desc: "output primary field if other fields are not present",
+			v: Config{
+				Primary: Primary{
+					A: "AValue",
+				},
+			},
+			expected: `Primary = 'AValue'
+`,
+		},
+	}
+
+	for _, e := range examples {
+		e := e
+		t.Run(e.desc, func(t *testing.T) {
+			out, err := toml.Marshal(e.v)
+			if e.err {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, e.expected, string(out))
+		})
+	}
+}
+
+func TestEncodeRootInlineOpt(t *testing.T) {
+	type Entry struct {
+		A string `toml:"a"`
+		B bool   `toml:"b"`
+	}
+	cfg := map[string]map[string]Entry{
+		"python": {
+			"path": {
+				A: "Avalue",
+				B: true,
+			},
+		},
+		"java": {
+			"path": {
+				A: "Avalue",
+				B: false,
+			},
+		},
+	}
+	var buf bytes.Buffer
+	enc := toml.NewEncoder(&buf)
+	enc.SetRootInline(true)
+
+	err := enc.Encode(cfg)
+	assert.NoError(t, err)
+	expected := `[java]
+path = {a = 'Avalue', b = false}
+
+[python]
+path = {a = 'Avalue', b = true}
+`
+	assert.Equal(t, expected, buf.String())
+
+}

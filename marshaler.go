@@ -789,6 +789,33 @@ func walkStruct(ctx encoderCtx, t *table, v reflect.Value) {
 }
 
 func (enc *Encoder) encodeStruct(b []byte, ctx encoderCtx, v reflect.Value) ([]byte, error) {
+	typ := v.Type()
+	var firstIdx = -1
+	var allOtherDefault = true
+
+	// Check if the "primary" tag exist and other fields are the default values
+	for i := 0; i < typ.NumField(); i++ {
+		fieldType := typ.Field(i)
+		if fieldType.PkgPath != "" {
+			continue
+		}
+		tag := fieldType.Tag.Get("toml")
+		k, opts := parseTag(tag)
+		f := v.Field(i)
+		if k == "primary" || opts.primary {
+			firstIdx = i
+		} else {
+			if !isEmptyValue(f) {
+				allOtherDefault = false
+			}
+		}
+	}
+
+	// Output the primary field if it is not empty and other fields are default
+	if firstIdx != -1 && allOtherDefault && !isEmptyValue(v.Field(firstIdx)) {
+		return enc.encode(b, ctx, v.Field(firstIdx))
+	}
+
 	var t table
 
 	walkStruct(ctx, &t, v)
@@ -837,6 +864,7 @@ type tagOptions struct {
 	inline    bool
 	omitempty bool
 	commented bool
+	primary   bool
 }
 
 func parseTag(tag string) (string, tagOptions) {
@@ -866,6 +894,9 @@ func parseTag(tag string) (string, tagOptions) {
 			opts.omitempty = true
 		case "commented":
 			opts.commented = true
+		case "primary":
+			opts.primary = true
+
 		}
 	}
 
@@ -876,29 +907,6 @@ func (enc *Encoder) encodeTable(b []byte, ctx encoderCtx, t table) ([]byte, erro
 	var err error
 
 	ctx.shiftKey()
-
-	//// rootInline: 只在 root 层输出表头，后续都以内联表
-	//if enc.rootInline && ctx.isRoot() {
-	//	for _, t2 := range t.tables {
-	//		ctx.setKey(t2.Key)
-	//		// 输出一级表头
-	//		b, err = enc.encodeTableHeader(ctx, b)
-	//		if err != nil {
-	//			return nil, err
-	//		}
-	//		// 下一级强制 inline
-	//		ctx2 := ctx
-	//		ctx2.inline = true
-	//		var innerTable table
-	//		walkStruct(ctx2, &innerTable, t2.Value)
-	//		b, err = enc.encodeTableInline(b, ctx2, innerTable)
-	//		if err != nil {
-	//			return nil, err
-	//		}
-	//		b = append(b, '\n')
-	//	}
-	//	return b, nil
-	//}
 
 	if ctx.insideKv || (ctx.inline && !ctx.isRoot()) {
 		return enc.encodeTableInline(b, ctx, t)

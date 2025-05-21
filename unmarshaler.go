@@ -682,6 +682,20 @@ func (d *decoder) handleValue(value *unstable.Node, v reflect.Value) error {
 		return err
 	}
 
+	// If the target is a struct and the TOML is a primitive type, assign it to the 'primary' field first
+	if v.Kind() == reflect.Struct && isTomlPrimitive(value.Kind) {
+		typ := v.Type()
+		for i := 0; i < typ.NumField(); i++ {
+			field := typ.Field(i)
+			tag := field.Tag.Get("toml")
+			k, opts := parseTag(tag)
+			if k == "primary" || opts.primary {
+				f := v.Field(i)
+				return d.handleValue(value, f)
+			}
+		}
+	}
+
 	switch value.Kind {
 	case unstable.String:
 		return d.unmarshalString(value, v)
@@ -705,6 +719,21 @@ func (d *decoder) handleValue(value *unstable.Node, v reflect.Value) error {
 		return d.unmarshalArray(value, v)
 	default:
 		panic(fmt.Errorf("handleValue not implemented for %s", value.Kind))
+	}
+}
+func isTomlPrimitive(kind unstable.Kind) bool {
+	switch kind {
+	case unstable.String,
+		unstable.Integer,
+		unstable.Float,
+		unstable.Bool,
+		unstable.DateTime,
+		unstable.LocalDate,
+		unstable.LocalTime,
+		unstable.LocalDateTime:
+		return true
+	default:
+		return false
 	}
 }
 
